@@ -1,11 +1,11 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 #======================================================================
 #
 # gptcommit.py - 
 #
 # Created by skywind on 2024/02/11
-# Last Modified: 2024/02/13 11:07
+# Last Modified: 2024/02/14 14:40
 #
 #======================================================================
 import sys
@@ -111,7 +111,7 @@ def CallGit(*args):
 #----------------------------------------------------------------------
 # lazy request
 #----------------------------------------------------------------------
-DEFAULT_MAX_LINE = 120
+DEFAULT_MAX_LINE = 160
 
 
 #----------------------------------------------------------------------
@@ -200,9 +200,13 @@ def MakeMessages(text, OPTIONS):
         prompt = 'Generate concise git commit message, for my changes'
     lang = OPTIONS.get('lang', '')
     if lang:
+        lang = lang[:1].upper() + lang[1:].lower()
         prompt += ' (in %s)'%lang
+    if 'prompt' in OPTIONS:
+        prompt = OPTIONS['prompt']
     msgs.append({'role': 'system', 'content': prompt})
     text = TextLimit(text, OPTIONS.get('maxline', DEFAULT_MAX_LINE))
+    text = text.rstrip('\r\n\t ')
     msgs.append({'role': 'user', 'content': text})
     return msgs
 
@@ -246,6 +250,28 @@ def ExtractInfo(obj):
 
 
 #----------------------------------------------------------------------
+# EXAMPLE
+#----------------------------------------------------------------------
+EXAMPLE_RETURN = {
+    'choices': [{
+         'finish_reason': 'stop',
+         'index': 0,
+         'logprobs': None,
+         'message': {'content': 'Refactored gptcommit.py code and added a '
+                     'new function CheckRepo() to check if a '
+                     'path is inside a repository',
+                     'role': 'assistant'}}],
+    'created': 1707882946,
+    'id': 'chatcmpl-8s0f4jUWzPyzvZ2Er9CBzNiPgLGMh',
+    'model': 'gpt-3.5-turbo-0613',
+    'object': 'chat.completion',
+    'system_fingerprint': None,
+    'usage': {'completion_tokens': 25,
+           'prompt_tokens': 1042,
+           'total_tokens': 1067}}
+
+
+#----------------------------------------------------------------------
 # help
 #----------------------------------------------------------------------
 def help():
@@ -255,13 +281,14 @@ def help():
     print('usage: %s %s <options> repo_path'%(exe, script))
     print('available options:')
     print('  --key=xxx       required, your openai apikey')
-    print('  --staged        optional, if present will use staged diff')
+    print('  --staged        optional, use staged diff if present')
     print('  --proxy=xxx     optional, proxy support')
     n = DEFAULT_MAX_LINE
     print('  --maxline=num   optional, max diff lines to feed ChatGPT, default ot %d'%n)
-    print('  --model=xxx     optional, can be gpt-3.5-turbo or something')
+    print('  --model=xxx     optional, can be gpt-3.5-turbo (default) or something')
     print('  --lang=xxx      optional, output language')
     print('  --concise       optional, generate concise message if present')
+    print('  --utf8          optional, output utf-8 encoded text if present')
     print()
     return 0
 
@@ -304,6 +331,10 @@ def main(argv = None):
         OPTIONS['lang'] = options['language']
     OPTIONS['staged'] = ('staged' in options)
     OPTIONS['concise'] = ('concise' in options)
+    if 'prompt' in options:
+        prompt = options['prompt']
+        if prompt:
+            OPTIONS['prompt'] = prompt
     if args:
         OPTIONS['path'] = os.path.abspath(args[0])
         if not os.path.exists(args[0]):
@@ -318,18 +349,31 @@ def main(argv = None):
         return 3
     content = GitDiff(OPTIONS['path'], OPTIONS['staged'])
     msgs = MakeMessages(content, OPTIONS)
+    if msgs[1]['content'] == '':
+        print('No changes')
+        return 4
     # print(msgs)
     opts = {}
     opts['model'] = OPTIONS.get('model', 'gpt-3.5-turbo')
     # opts['timeout'] = 60000
     if 'proxy' in OPTIONS:
-        opts['proxy'] = OPTIONS['proxy']
-    obj = chatgpt_request(msgs, OPTIONS['key'], opts)
+        proxy = OPTIONS['proxy']
+        if proxy.startswith('socks5://'):
+            proxy = 'socks5h://' + proxy[9:]
+        opts['proxy'] = proxy
+    if 'fake' not in options:
+        obj = chatgpt_request(msgs, OPTIONS['key'], opts)
+    else:
+        obj = EXAMPLE_RETURN
     msg = ExtractInfo(obj)
     if not isinstance(msg, str):
         sys.exit(msg)
         return msg
-    print(msg)
+    if 'utf8' in options:
+        fp = open(sys.stdout.fileno(), mode = 'wb')
+        fp.write(msg.encode('utf-8', 'ignore'))
+    else:
+        print(msg)
     return 0
 
 

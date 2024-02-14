@@ -149,6 +149,7 @@ function! gptcommit#utils#find_python() abort
 			endif
 		endfor
 	endif
+	return ''
 endfunc
 
 
@@ -172,5 +173,33 @@ function! gptcommit#utils#find_script() abort
 	return ''
 endfunc
 
+
+
+"----------------------------------------------------------------------
+" run gptcommit.py 
+"----------------------------------------------------------------------
+function! gptcommit#utils#request(args) abort
+	let python = gptcommit#utils#find_python()
+	if python == ''
+		call gptcommit#utils#errmsg('python3 executable file missing')
+		return ''
+	endif
+	let script = gptcommit#utils#find_script()
+	if script == ''
+		call gptcommit#utils#errmsg('gptcommit.py script missing')
+		return ''
+	endif
+	let cmd = printf('%s %s', shellescape(python), shellescape(script))
+	let cmd = cmd .. ' --utf8'
+	if s:windows
+		let cmd = 'call ' .. cmd
+	endif
+	for n in a:args
+		let cmd = cmd .. ' ' .. shellescape(n)
+	endfor
+	let text = system(cmd)
+	let textlist = split(text, "\n")
+	return join(textlist, "\n")
+endfunc
 
 
