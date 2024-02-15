@@ -6,6 +6,8 @@ Generate proper git commit message using ChatGPT in Vim:
 
 This plugin provides a `:GptCommit` command to generate commit message and append in the current buffer.
 
+Usually, it can be used when editing the `COMMIT_EDITMSG` file, or in a fugitive commit window.
+
 ## Quick start
 
 For vim-plug:
@@ -40,12 +42,12 @@ Requirements:
 This plugin provides only one command:
 
 ```VimL
-:GptCommand[!] [repo_path]
+:GptCommit[!] [repo_path]
 ```
 
 It will generate git commit message and append to the current cursor position. If the `repo_path` is omitted, the directory name of the current buffer will be used.
 
-If the bang (`!`) is included, `:GptCommand` will not append any text to the current buffer, instead, it will only store the messages in the unnamed register (`*`). You can use them any time manually by `"*p` or display the content by:
+If the bang (`!`) is included, `:GptCommit` will not append any text to the current buffer, instead, it will only store the messages in the unnamed register (`*`). You can use them any time manually by `"*p` or display the content by:
 
 ```VimL
 :echo @*
@@ -95,7 +97,7 @@ If you find this plugin amusing, you might also be interested in my other vim pl
 - [vim-auto-popmenu](https://github.com/skywind3000/vim-auto-popmenu): Display the completion menu automantically.
 - [vim-color-export](https://github.com/skywind3000/vim-color-export): A tool to backport NeoVim colorschemes to Vim. 
 - [vim-navigator](https://github.com/skywind3000/vim-navigator): Navigate your commands easily.
-- [vim-rt-format](https://github.com/skywind3000/vim-rt-format): Prettify current line on Enter.
+- [vim-rt-format](https://github.com/skywind3000/vim-rt-format): Prettify current line when you press Enter.
 - [vim-quickui](https://github.com/skywind3000/vim-quickui): The missing UI extensions for Vim 8.2 (and NeoVim 0.4).
 - [asynctasks.vim](https://github.com/skywind3000/asynctasks.vim): Modern task system for project building/testing/deploying.
 
