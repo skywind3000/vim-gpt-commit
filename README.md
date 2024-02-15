@@ -31,6 +31,10 @@ For lazy:
 },
 ```
 
+Requirements:
+
+- Python: A Python 3 executable binary needs to be located in your `$PATH`, but vim's `+python3` feature is not required.
+
 ## Command
 
 This plugin provides only one command:
