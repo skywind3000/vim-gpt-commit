@@ -65,6 +65,7 @@ You will see the result in the command line.
 | g:gpt_commit_staged | - | `1` | set to 1 to use staged diff |
 | g:gpt_commit_max_line | - | `160` | max diff lines to reference |
 | g:gpt_commit_url | - | `''` | alternative request URL, see #1 |
+| g:gpt_commit_python | - | `''` | specify the Python executable file explicitly |
 
 Note #1: the default URL is "https://api.openai.com/v1/chat/completions", can be changed by setting `g:gpt_commit_url`.
 
