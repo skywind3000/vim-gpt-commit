@@ -92,11 +92,11 @@ It can be integrated into other editors.
 
 If you find this plugin amusing, you might also be interested in my other vim plugins, such as:
 
-- [vim-auto-popmenu](https://github.com/skywind3000/vim-auto-popmenu): Display the Completion Menu Automantically.
+- [vim-auto-popmenu](https://github.com/skywind3000/vim-auto-popmenu): Display the completion menu automantically.
 - [vim-color-export](https://github.com/skywind3000/vim-color-export): A tool to backport NeoVim colorschemes to Vim. 
-- [vim-navigator](https://github.com/skywind3000/vim-navigator): Navigate Your Commands Easily.
-- [vim-rt-format](https://github.com/skywind3000/vim-rt-format): Prettify Current Line on Enter.
+- [vim-navigator](https://github.com/skywind3000/vim-navigator): Navigate your commands easily.
+- [vim-rt-format](https://github.com/skywind3000/vim-rt-format): Prettify current line on Enter.
 - [vim-quickui](https://github.com/skywind3000/vim-quickui): The missing UI extensions for Vim 8.2 (and NeoVim 0.4).
-- [asynctasks.vim](https://github.com/skywind3000/asynctasks.vim): Modern Task System for Project Building/Testing/Deploying.
+- [asynctasks.vim](https://github.com/skywind3000/asynctasks.vim): Modern task system for project building/testing/deploying.
 
 
