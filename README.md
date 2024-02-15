@@ -81,7 +81,7 @@ available options:
   --utf8          optional, output utf-8 encoded text if present
 ```
 
-
+It can be integrated into other editors. 
 
 ## Credit
 
