@@ -60,16 +60,66 @@ function! gptcommit#gpt#generate(path) abort
 	if get(g:, 'gpt_commit_fake', 0)
 		let args += ['--fake']
 	endif
-	let args += [a:path]
+	let path = a:path
+	if has('win32') || has('win64') || has('win95') || has('win16')
+		let path = tr(path, '\', '/')
+	endif
+	let args += [path]
 	" echo args
 	return gptcommit#utils#request(args)
 endfunc
 
 
 "----------------------------------------------------------------------
-" 
+" :GptCommit command
 "----------------------------------------------------------------------
-function! gptcommit#gpt#cmd(path)
-
+function! gptcommit#gpt#cmd(bang, path)
+	let path = a:path
+	if path == ''
+		let path = gptcommit#utils#current_path()
+	endif
+	if path == ''
+		call s:errmsg('can not detect path info')
+		return 1
+	elseif !isdirectory(path)
+		call s:errmsg('directory does not exist: ' .. path)
+		return 2
+	elseif gptcommit#utils#repo_root(path) == ''
+		call s:errmsg('not in a git repository: ' .. path) 
+		return 3
+	endif
+	if a:bang == 0
+		if gptcommit#utils#buffer_writable() == 0
+			call s:errmsg('buffer is not writable')
+		endif
+	endif
+	redraw
+	echohl Title
+	echo 'Generating commit message ...'
+	echohl None
+	redraw
+	let text = gptcommit#gpt#generate(path)
+	if text == ''
+		echo ""
+		redraw
+		return 4
+	endif
+	if a:bang == 0
+		let content = split(text, "\n")
+		call append(line('.') - 1, content)
+		echohl Title
+		echo "Generated"
+		echohl None
+		redraw
+	else
+		let @* = text
+		echohl Title
+		echo 'Generated (saved in the unnamed register, paste manually by "*p).'
+		echohl None
+		redraw
+	endif
+	return 0
 endfunc
+
+
 

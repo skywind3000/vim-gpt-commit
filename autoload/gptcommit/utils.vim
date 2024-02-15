@@ -203,3 +203,63 @@ function! gptcommit#utils#request(args) abort
 endfunc
 
 
+"----------------------------------------------------------------------
+" guess repo
+"----------------------------------------------------------------------
+function! gptcommit#utils#current_path()
+	if &bt != ''
+		if &ft == 'fugitive'
+			let fn = expand('%:p')
+			if fn =~ '\v^fugitive\:[\\\/][\\\/][\\\/]'
+				let path = strpart(fn, s:windows? 12 : 11)
+				let pos = stridx(path, '.git')
+				if pos >= 0
+					let path = strpart(path, 0, pos)
+				endif
+				return fnamemodify(path, ':h')
+			endif
+		endif
+		return getcwd()
+	elseif expand('%:p') == ''
+		return getcwd()
+	endif
+	if &ft == 'gitcommit'
+		if expand('%:p') =~ '\v[\\\/]\.git[\\\/]COMMIT_EDITMSG$'
+			return expand('%:p:h:h')
+		endif
+	endif
+	return expand('%:p:h')
+endfunc
+
+
+"----------------------------------------------------------------------
+" check if a buffer is writable
+"----------------------------------------------------------------------
+function! gptcommit#utils#buffer_writable() abort
+	if &bt != ''
+		return 0
+	elseif &modifiable == 0
+		return 0
+	elseif &readonly
+		return 0
+	endif
+	return 1
+endfunc
+
+
+
+"----------------------------------------------------------------------
+" find repo root, returns empty string if not in a repository
+"----------------------------------------------------------------------
+function! gptcommit#utils#repo_root(path)
+	let name = fnamemodify((a:path == '')? bufname('%') : (a:path), ':p')
+	let find = finddir('.git', name .. '/;')
+	if find == ''
+		return ''
+	endif
+	let find = fnamemodify(find, ':p:h:h')
+	return find
+endfunc
+
+
+
