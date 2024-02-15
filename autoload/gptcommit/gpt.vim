@@ -66,7 +66,17 @@ function! gptcommit#gpt#generate(path) abort
 	endif
 	let args += [path]
 	" echo args
-	return gptcommit#utils#request(args)
+	let hr = gptcommit#utils#request(args)
+	if get(g:, 'gpt_commit_fake', 0)
+		if exists('g:gpt_commit_fake_msg')
+			if type(g:gpt_commit_fake_msg) == type([])
+				let hr = join(g:gpt_commit_fake_msg, "\n")
+			else
+				let hr = g:gpt_commit_fake_msg
+			endif
+		endif
+	endif
+	return hr
 endfunc
 
 

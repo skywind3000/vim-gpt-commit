@@ -271,6 +271,21 @@ EXAMPLE_RETURN = {
            'total_tokens': 1067}}
 
 
+EXAMPLE_MESSAGE = '''
+Add new function to handle command interface in gpt.vim and utils.vim files
+- Added a new function `gptcommit#gpt#cmd(bang, path)` to handle the command interface for generating the commit message.
+- Added logic to detect the current path if no path is provided.
+- Added logic to check if the provided path is a valid directory.
+- Added logic to check if the provided path is within a git repository.
+- Added logic to handle cases where the buffer is not writable.
+- Added logic to generate the commit message and display it.
+- Added logic to append the generated commit message to the current buffer or copy it to the unnamed register.
+- Modified the `gptcommit#utils#current_path()` function to handle cases specific to the `fugitive` plugin and the `gitcommit` filetype.
+- Added a new function `gptcommit#utils#buffer_writable()` to check if a buffer is writable.
+- Added a new function `gptcommit#utils#repo_root(path)` to find the root directory of a git repository.
+'''.strip('\r\n\t ')
+
+
 #----------------------------------------------------------------------
 # help
 #----------------------------------------------------------------------
@@ -365,6 +380,8 @@ def main(argv = None):
         obj = chatgpt_request(msgs, OPTIONS['key'], opts)
     else:
         obj = EXAMPLE_RETURN
+        if not OPTIONS['concise']:
+            obj['choices'][0]['message']['content'] = EXAMPLE_MESSAGE
     msg = ExtractInfo(obj)
     if not isinstance(msg, str):
         sys.exit(msg)

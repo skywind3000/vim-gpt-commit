@@ -1,6 +1,9 @@
 # Preface
 
-Generate proper git commit message using ChatGPT in Vim
+Generate proper git commit message using ChatGPT in Vim:
+
+![](https://skywind3000.github.io/images/p/misc/2024/gptcommit1.gif)
+
 
 ## Quick start
 
@@ -54,6 +57,25 @@ If the bang (`!`) is included, `:GptCommand` will not append any text to the cur
 | g:gpt_commit_model | - | `'gpt-3.5-turbo'` | ChatGPT model |
 | g:gpt_commit_staged | - | `1` | set to 1 to use staged diff |
 | g:gpt_commit_max_line | - | `160` | max diff lines to reference |
+
+## Script
+
+For command line usage, you can execute `gptcommit.py` in the `bin` directory:
+
+```
+usage: python3 gptcommit.py <options> repo_path
+available options:
+  --key=xxx       required, your openai apikey
+  --staged        optional, use staged diff if present
+  --proxy=xxx     optional, proxy support
+  --maxline=num   optional, max diff lines to feed ChatGPT, default ot 160
+  --model=xxx     optional, can be gpt-3.5-turbo (default) or something
+  --lang=xxx      optional, output language
+  --concise       optional, generate concise message if present
+  --utf8          optional, output utf-8 encoded text if present
+```
+
+
 
 ## Credit
 
