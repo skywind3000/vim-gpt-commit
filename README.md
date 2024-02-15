@@ -13,7 +13,7 @@ For vim-plug:
 ```vimL
 Plug 'skywind3000/vim-gpt-commit'
 
-let g:gpt_commit_key = 'Your open apikey'
+let g:gpt_commit_key = 'Your openai apikey'
 " uncomment this line below to enable proxy
 " let g:gpt_commit_proxy = 'socks5://127.0.0.1:1080'
 ```
