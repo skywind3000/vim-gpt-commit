@@ -94,7 +94,6 @@ If you find this plugin amusing, you might also be interested in my other vim pl
 
 - [vim-auto-popmenu](https://github.com/skywind3000/vim-auto-popmenu): Display the Completion Menu Automantically.
 - [vim-color-export](https://github.com/skywind3000/vim-color-export): A tool to backport NeoVim colorschemes to Vim. 
-- [vim-color-patch](https://github.com/skywind3000/vim-color-patch): Load colorscheme patch script automatically.
 - [vim-navigator](https://github.com/skywind3000/vim-navigator): Navigate Your Commands Easily.
 - [vim-rt-format](https://github.com/skywind3000/vim-rt-format): Prettify Current Line on Enter.
 - [vim-quickui](https://github.com/skywind3000/vim-quickui): The missing UI extensions for Vim 8.2 (and NeoVim 0.4).
