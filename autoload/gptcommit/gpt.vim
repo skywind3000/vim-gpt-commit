@@ -60,6 +60,10 @@ function! gptcommit#gpt#generate(path) abort
 	if get(g:, 'gpt_commit_fake', 0)
 		let args += ['--fake']
 	endif
+	let url = get(g:, 'gpt_commit_url', '')
+	if url != ''
+		let args += ['--url=' .. url]
+	endif
 	let path = a:path
 	if has('win32') || has('win64') || has('win95') || has('win16')
 		let path = tr(path, '\', '/')

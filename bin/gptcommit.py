@@ -350,6 +350,10 @@ def main(argv = None):
         prompt = options['prompt']
         if prompt:
             OPTIONS['prompt'] = prompt
+    if 'url' in options:
+        url = options['url']
+        if url:
+            OPTIONS['url'] = url
     if args:
         OPTIONS['path'] = os.path.abspath(args[0])
         if not os.path.exists(args[0]):
@@ -376,6 +380,8 @@ def main(argv = None):
         if proxy.startswith('socks5://'):
             proxy = 'socks5h://' + proxy[9:]
         opts['proxy'] = proxy
+    if 'url' in OPTIONS:
+        opts['url'] = OPTIONS['url']
     if 'fake' not in options:
         obj = chatgpt_request(msgs, OPTIONS['key'], opts)
     else:

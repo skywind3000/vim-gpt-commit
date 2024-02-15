@@ -4,6 +4,7 @@ Generate proper git commit message using ChatGPT in Vim:
 
 ![](https://skywind3000.github.io/images/p/misc/2024/gptcommit1.gif)
 
+This plugin provides a `:GptCommit` command to generate commit message and append in the current buffer.
 
 ## Quick start
 
@@ -46,6 +47,8 @@ If the bang (`!`) is included, `:GptCommand` will not append any text to the cur
 :echo @*
 ```
 
+You will see the result in the command line.
+
 ## Options
 
 | Name | Required | Default | Description |
@@ -57,6 +60,7 @@ If the bang (`!`) is included, `:GptCommand` will not append any text to the cur
 | g:gpt_commit_model | - | `'gpt-3.5-turbo'` | ChatGPT model |
 | g:gpt_commit_staged | - | `1` | set to 1 to use staged diff |
 | g:gpt_commit_max_line | - | `160` | max diff lines to reference |
+| g:gpt_commit_url | - | `''` | openai request url |
 
 ## Script
 
@@ -78,4 +82,15 @@ available options:
 
 
 ## Credit
+
+If you find this plugin amusing, you might also be interested in my other vim plugins, such as:
+
+- [asynctasks.vim](https://github.com/skywind3000/asynctasks.vim): Modern Task System for Project Building/Testing/Deploying.
+- [vim-auto-popmenu](https://github.com/skywind3000/vim-auto-popmenu): Display the Completion Menu Automantically.
+- [vim-color-export](https://github.com/skywind3000/vim-color-export): A tool to backport NeoVim colorschemes to Vim. 
+- [vim-color-patch](https://github.com/skywind3000/vim-color-patch): Load colorscheme patch script automatically.
+- [vim-navigator](https://github.com/skywind3000/vim-navigator): Navigate Your Commands Easily.
+- [vim-rt-format](https://github.com/skywind3000/vim-rt-format): Prettify Current Line on Enter.
+- [vim-quickui](https://github.com/skywind3000/vim-quickui): The missing UI extensions for Vim 8.2 (and NeoVim 0.4).
+
 
