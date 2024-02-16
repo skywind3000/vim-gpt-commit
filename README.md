@@ -86,6 +86,7 @@ available options:
   --lang=xxx      optional, output language
   --concise       optional, generate concise message if present
   --utf8          optional, output utf-8 encoded text if present
+  --url=xxx       optional, alternative openai request url
 ```
 
 It can be integrated into other editors. 

@@ -304,6 +304,7 @@ def help():
     print('  --lang=xxx      optional, output language')
     print('  --concise       optional, generate concise message if present')
     print('  --utf8          optional, output utf-8 encoded text if present')
+    print('  --url=xxx       optional, alternative openai request url')
     print()
     return 0
 
