@@ -1,6 +1,6 @@
 # Preface
 
-Generate proper git commit message using ChatGPT or [Ollama](https://github.com/ollama/ollama) in Vim:
+Generate proper git commit message using ChatGPT (or [Ollama](https://github.com/ollama/ollama)) in Vim:
 
 ![](https://skywind3000.github.io/images/p/misc/2024/gptcommit1.gif)
 
@@ -21,8 +21,8 @@ let g:gpt_commit_key = 'Your openai apikey'
 
 " uncomment the following lines to use Ollama:
 " let g:gpt_commit_engine = 'ollama'
-" let g:gpt_commit_ollama_model = 'llama2'
 " let g:gpt_commit_ollama_url = 'http://127.0.0.1:11434/api/chat'
+" let g:gpt_commit_ollama_model = 'llama2'
 ```
 
 For lazy:
@@ -36,6 +36,11 @@ For lazy:
         vim.g.gpt_commit_key = os.getenv("OPENAI_API_KEY")
         -- uncomment this line below to enable proxy
         -- vim.g.gpt_commit_proxy = 'socks5://127.0.0.1:1080'
+
+        -- uncomment the following lines to use Ollama:
+        -- vim.g.gpt_commit_engine = 'ollama'
+        -- vim.g.gpt_commit_ollama_url = 'http://127.0.0.1:11434/api/chat'
+        -- vim.g.gpt_commit_ollama_model = 'llama2'
     end,
 },
 ```
