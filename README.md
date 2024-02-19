@@ -1,6 +1,6 @@
 # Preface
 
-Generate proper git commit message using ChatGPT in Vim:
+Generate proper git commit message using ChatGPT or [Ollama](https://github.com/ollama/ollama) in Vim:
 
 ![](https://skywind3000.github.io/images/p/misc/2024/gptcommit1.gif)
 
@@ -18,6 +18,11 @@ Plug 'skywind3000/vim-gpt-commit'
 let g:gpt_commit_key = 'Your openai apikey'
 " uncomment this line below to enable proxy
 " let g:gpt_commit_proxy = 'socks5://127.0.0.1:1080'
+
+" uncomment the following lines to use Ollama:
+" let g:gpt_commit_engine = 'ollama'
+" let g:gpt_commit_ollama_model = 'llama2'
+" let g:gpt_commit_ollama_url = 'http://127.0.0.1:11434/api/chat'
 ```
 
 For lazy:
@@ -70,6 +75,9 @@ You will see the result in the command line.
 | g:gpt_commit_max_line | - | `160` | max diff lines to reference |
 | g:gpt_commit_url | - | `''` | alternative request URL, see #1 |
 | g:gpt_commit_python | - | `''` | specify the Python executable file explicitly |
+| g:gpt_commit_engine | - | `'chatgpt'` | change to 'ollama' to use Ollama |
+| g:gpt_commit_ollama_model | Yes | `''` | ollama model |
+| g:gpt_commit_ollama_url | - | `''` | explicitly setting ollama URL|
 
 Note #1: the default URL is "https://api.openai.com/v1/chat/completions", can be changed by setting `g:gpt_commit_url`.
 
