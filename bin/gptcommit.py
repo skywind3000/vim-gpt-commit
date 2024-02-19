@@ -43,6 +43,30 @@ def chatgpt_request(messages, apikey, opts):
 
 
 #----------------------------------------------------------------------
+# request ollama
+#----------------------------------------------------------------------
+def ollama_request(messages, url, model, opts):
+    import urllib, urllib.request, json
+    proxy = opts.get('proxy', None)
+    timeout = opts.get('timeout', 20000)
+    d = {'model': model, 'messages': messages}
+    d['stream'] = False
+    handlers = []
+    if proxy:
+        p = {'http': proxy, 'https': proxy}
+        proxy_handler = urllib.request.ProxyHandler(p)
+        handlers.append(proxy_handler)
+    opener = urllib.request.build_opener(*handlers)
+    req = urllib.request.Request(url, data = json.dumps(d).encode('utf-8'))
+    req.add_header("Content-Type", "application/json")
+    response = opener.open(req, timeout = timeout)
+    data = response.read()
+    response.close()
+    text = data.decode('utf-8', errors = 'ignore')
+    return json.loads(text)
+
+
+#----------------------------------------------------------------------
 # load ini
 #----------------------------------------------------------------------
 def load_ini(filename, encoding = None):
@@ -195,15 +219,21 @@ def TextLimit(text, maxline):
 #----------------------------------------------------------------------
 def MakeMessages(text, OPTIONS):
     msgs = []
+    engine = OPTIONS.get('engine', 'chatgpt')
     prompt = 'Generate git commit message, for my changes'
     if OPTIONS['concise']:
         prompt = 'Generate concise git commit message, for my changes'
+    if engine == 'ollama':
+        model = OPTIONS.get('ollama_model', 'llama2')
+        if model.startswith('llama2'):
+            prompt = prompt + ' (less verbose)'
     lang = OPTIONS.get('lang', '')
     if lang:
         lang = lang[:1].upper() + lang[1:].lower()
         prompt += ' (in %s)'%lang
     if 'prompt' in OPTIONS:
         prompt = OPTIONS['prompt']
+    # print('prompt', prompt)
     msgs.append({'role': 'system', 'content': prompt})
     text = TextLimit(text, OPTIONS.get('maxline', DEFAULT_MAX_LINE))
     text = text.rstrip('\r\n\t ')
@@ -323,14 +353,35 @@ def main(argv = None):
     if len(args) == 0:
         help()
         return 0
-    if 'key' not in options:
-        envkey = os.environ.get('GPT_COMMIT_KEY', '')
-        if not envkey:
-            print('--key=XXX is required, use -h for help.')
-            return 1
-        OPTIONS['key'] = envkey
-    else:
-        OPTIONS['key'] = options['key']
+    OPTIONS['engine'] = 'chatgpt'
+    if 'engine' in options:
+        OPTIONS['engine'] = options['engine']
+    engine = OPTIONS['engine']
+    if engine == 'chatgpt':
+        if not options.get('key', ''):
+            envkey = os.environ.get('GPT_COMMIT_KEY', '')
+            if not envkey:
+                print('--key=XXX is required, use -h for help.')
+                return 1
+            OPTIONS['key'] = envkey
+        else:
+            OPTIONS['key'] = options['key']
+    elif engine == 'ollama':
+        if not options.get('ollama_url', ''):
+            ollama_url = os.environ.get('GPT_COMMIT_OLLAMA_URL', '')
+            if not ollama_url:
+                ollama_url = 'http://127.0.0.1:11434/api/chat'
+            OPTIONS['ollama_url'] = ollama_url
+        else:
+            OPTIONS['ollama_url'] = options['ollama_url']
+        if 'ollama_model' not in options:
+            ollama_model = os.environ.get('GPT_COMMIT_OLLAMA_MODEL', '')
+            if not ollama_model:
+                print('--ollama_model=XXX is required, use -h for help.')
+                return 1
+            OPTIONS['ollama_model'] = ollama_model
+        else:
+            OPTIONS['ollama_model'] = options['ollama_model']
     # print(options)
     if 'proxy' in options:
         OPTIONS['proxy'] = options['proxy']
@@ -374,22 +425,32 @@ def main(argv = None):
         return 4
     # print(msgs)
     opts = {}
-    opts['model'] = OPTIONS.get('model', 'gpt-3.5-turbo')
-    # opts['timeout'] = 60000
     if 'proxy' in OPTIONS:
         proxy = OPTIONS['proxy']
         if proxy.startswith('socks5://'):
             proxy = 'socks5h://' + proxy[9:]
         opts['proxy'] = proxy
-    if 'url' in OPTIONS:
-        opts['url'] = OPTIONS['url']
-    if 'fake' not in options:
-        obj = chatgpt_request(msgs, OPTIONS['key'], opts)
+    if engine == 'chatgpt' or 'fake' in options:
+        opts['model'] = OPTIONS.get('model', 'gpt-3.5-turbo')
+        # opts['timeout'] = 60000
+        if 'url' in OPTIONS:
+            opts['url'] = OPTIONS['url']
+        if 'fake' not in options:
+            obj = chatgpt_request(msgs, OPTIONS['key'], opts)
+        else:
+            obj = EXAMPLE_RETURN
+            if not OPTIONS['concise']:
+                obj['choices'][0]['message']['content'] = EXAMPLE_MESSAGE
+        msg = ExtractInfo(obj)
     else:
-        obj = EXAMPLE_RETURN
-        if not OPTIONS['concise']:
-            obj['choices'][0]['message']['content'] = EXAMPLE_MESSAGE
-    msg = ExtractInfo(obj)
+        url = OPTIONS['ollama_url']
+        model = OPTIONS['ollama_model']
+        obj = ollama_request(msgs, url, model, opts)
+        msg = 'response error'
+        if 'message' in obj:
+            message = obj['message']
+            if 'content' in message:
+                msg = message['content']
     if not isinstance(msg, str):
         sys.exit(msg)
         return msg

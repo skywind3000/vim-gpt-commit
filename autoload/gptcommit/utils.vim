@@ -190,14 +190,19 @@ function! gptcommit#utils#request(args) abort
 		return ''
 	endif
 	let cmd = printf('%s %s', shellescape(python), shellescape(script))
-	let cmd = cmd .. ' --utf8'
+	let cmd = cmd . ' --utf8'
 	if s:windows
-		let cmd = 'call ' .. cmd
+		let cmd = 'call ' . cmd
 	endif
 	for n in a:args
-		let cmd = cmd .. ' ' .. shellescape(n)
+		let cmd = cmd . ' ' . shellescape(n)
 	endfor
 	let text = system(cmd)
+	if &encoding != 'utf-8'
+		if has('iconv') && &encoding != ''
+			let text = iconv(text, 'utf-8', &encoding)
+		endif
+	endif
 	let textlist = split(text, "\n")
 	return join(textlist, "\n")
 endfunc
@@ -253,7 +258,7 @@ endfunc
 "----------------------------------------------------------------------
 function! gptcommit#utils#repo_root(path)
 	let name = fnamemodify((a:path == '')? bufname('%') : (a:path), ':p')
-	let find = finddir('.git', name .. '/;')
+	let find = finddir('.git', name . '/;')
 	if find == ''
 		return ''
 	endif
