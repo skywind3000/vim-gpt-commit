@@ -19,7 +19,8 @@ import json
 #----------------------------------------------------------------------
 def chatgpt_request(messages, apikey, opts):
     import urllib, urllib.request, json
-    url = opts.get('url', "https://api.openai.com/v1/chat/completions")
+    url = opts.get('url', 'https://api.openai.com').rstrip('/')
+    url = url + "/v1/chat/completions"
     proxy = opts.get('proxy', None)
     timeout = opts.get('timeout', 20000)
     d = {'messages': messages}
@@ -484,10 +485,11 @@ if __name__ == '__main__':
         return 0
     def test4():
         apikey = open(os.path.expanduser(keyfile), 'r').read().strip('\r\n\t ')
-        # print(apikey)
+        print(apikey)
         proxy = '--proxy=socks5h://127.0.0.1:1080'
         args = []
-        args = ['--key=' + apikey, proxy, 'c:/share/vim/lib']
+        args += ['--url=' + 'https://api.v3.cm/v1/chat/completions']
+        args += ['--key=' + apikey, proxy, 'c:/share/vim/lib']
         # args = ['--key=' + apikey, 'c:/share/plugin']
         # args = ['-h']
         main(args)
