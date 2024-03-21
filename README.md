@@ -84,7 +84,7 @@ You will see the result in the command line.
 | g:gpt_commit_ollama_model | Yes | `''` | ollama model |
 | g:gpt_commit_ollama_url | - | `''` | explicitly setting ollama URL|
 
-Note #1: the default URL is "https://api.openai.com/v1/chat/completions", can be changed by setting `g:gpt_commit_url`.
+Note #1: the default URL is "https://api.openai.com", can be changed by setting `g:gpt_commit_url`.
 
 ## Script
 
