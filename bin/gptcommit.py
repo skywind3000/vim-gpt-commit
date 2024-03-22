@@ -103,7 +103,7 @@ def load_ini(filename, encoding = None):
 #----------------------------------------------------------------------
 def execute(args):
     import subprocess
-    p = subprocess.Popen(args, shell = True,
+    p = subprocess.Popen(args, shell = False,
                          stdin = subprocess.PIPE, 
                          stdout = subprocess.PIPE,
                          stderr = subprocess.STDOUT)
@@ -486,10 +486,11 @@ if __name__ == '__main__':
     def test4():
         apikey = open(os.path.expanduser(keyfile), 'r').read().strip('\r\n\t ')
         print(apikey)
-        proxy = '--proxy=socks5h://127.0.0.1:1080'
+        proxy = ''
+        # proxy = '--proxy=socks5h://127.0.0.1:1080'
         args = []
-        args += ['--url=' + 'https://api.v3.cm/v1/chat/completions']
-        args += ['--key=' + apikey, proxy, 'c:/share/vim/lib']
+        args += ['--url=' + 'https://api.v3.cm']
+        args += ['--key=' + apikey, proxy, '/home/skywind/github/language']
         # args = ['--key=' + apikey, 'c:/share/plugin']
         # args = ['-h']
         main(args)
@@ -500,7 +501,11 @@ if __name__ == '__main__':
         pprint.pprint(obj)
         print(ExtractInfo(obj))
         return 0
-    # test4()
+    def test6():
+        os.chdir('/home/skywind/github/language')
+        print(execute(['git', 'diff', '--staged']))
+        return 0
+    # test6()
     main()
 
 
