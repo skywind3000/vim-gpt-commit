@@ -174,10 +174,22 @@ def GitDiff(path, staged = False):
     previous = os.getcwd()
     if path:
         os.chdir(path)
+    text = 'Git Diff: \n'
     if staged:
-        text = CallGit('diff', '--staged')
+        text += CallGit('diff', '--staged')
     else:
-        text = CallGit('diff')
+        text += CallGit('diff')
+    os.chdir(previous)
+    return text
+
+#----------------------------------------------------------------------
+# get git log
+#----------------------------------------------------------------------
+def GitLog(path):
+    previous = os.getcwd()
+    if path:
+        os.chdir(path)
+    text = 'Git logs: \n' + CallGit('log', '--pretty=format:%s', '-n', '10')
     os.chdir(previous)
     return text
 
@@ -420,6 +432,8 @@ def main(argv = None):
         print('Not a repository: %s'%path)
         return 3
     content = GitDiff(OPTIONS['path'], OPTIONS['staged'])
+    content += '\n\n'
+    content += GitLog(OPTIONS['path'])
     msgs = MakeMessages(content, OPTIONS)
     if msgs[1]['content'] == '':
         print('No changes')
