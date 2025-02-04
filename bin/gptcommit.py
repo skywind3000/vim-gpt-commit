@@ -174,11 +174,10 @@ def GitDiff(path, staged = False):
     previous = os.getcwd()
     if path:
         os.chdir(path)
-    text = 'Git Diff: \n'
     if staged:
-        text += CallGit('diff', '--staged')
+        text = CallGit('diff', '--staged')
     else:
-        text += CallGit('diff')
+        text = CallGit('diff')
     os.chdir(previous)
     return text
 
@@ -189,9 +188,11 @@ def GitLog(path):
     previous = os.getcwd()
     if path:
         os.chdir(path)
-    text = 'Git logs: \n' + CallGit('log', '--pretty=format:%s', '-n', '10')
+    logs = CallGit('log', '--pretty=format:%s', '-n', '10') or 'No logs'
+    if 'fatal: your current branch' in logs:
+        logs = ''
     os.chdir(previous)
-    return text
+    return logs
 
 
 #----------------------------------------------------------------------
@@ -431,9 +432,21 @@ def main(argv = None):
     if not root:
         print('Not a repository: %s'%path)
         return 3
-    content = GitDiff(OPTIONS['path'], OPTIONS['staged'])
-    content += '\n\n'
-    content += GitLog(OPTIONS['path'])
+    
+    content = f'''
+Git Changes:
+----------------
+{GitDiff(OPTIONS["path"], OPTIONS["staged"])}
+----------------
+
+Previous Git Logs:
+----------------
+{GitLog(OPTIONS["path"])}
+----------------
+
+Use the git changes and previous logs for context to complete the
+instructions that follows.
+'''
     msgs = MakeMessages(content, OPTIONS)
     if msgs[1]['content'] == '':
         print('No changes')
