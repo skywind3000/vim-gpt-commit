@@ -75,6 +75,7 @@ function! gptcommit#gpt#generate(path) abort
 		let args += ['--concise']
 	endif
 	let prompt = get(g:, 'gpt_commit_prompt', '')
+	let prompt = join(prompt, "\n")
 	if prompt != ''
 		let args += ['--prompt=' . prompt]
 	endif
