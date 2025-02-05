@@ -185,11 +185,11 @@ def GitDiff(path, staged = False):
 #----------------------------------------------------------------------
 # get git log
 #----------------------------------------------------------------------
-def GitLog(path):
+def GitLog(path, maxlogs = DEFAULT_MAX_LOGS_HISTORY):
     previous = os.getcwd()
     if path:
         os.chdir(path)
-    logs = CallGit('log', '--pretty=format:%s', '-n', '10') or 'No logs'
+    logs = CallGit('log', '--pretty=format:%s', '-n', maxlogs) or 'No logs'
     if 'fatal: your current branch' in logs:
         logs = ''
     os.chdir(previous)
@@ -451,7 +451,7 @@ Git Changes:
         git_logs_text += f'''
 Previous Git Logs:
 ----------------
-{GitLog(OPTIONS["path"])}
+{GitLog(OPTIONS["path"], OPTIONS["maxlogs"])}
 ----------------
 
 Use the previous Git Logs as context for the Git Changes
