@@ -448,7 +448,9 @@ Git Changes:
 
     git_logs_text = ''
     if OPTIONS['maxlogs'] > 0:
-        git_logs_text += f'''
+        content_size = len(git_changes_text.splitlines()) + (OPTIONS['maxlogs'] + 6) + 1
+        if content_size > OPTIONS.get('maxline', DEFAULT_MAX_LINE):
+            git_logs_text = f'''
 Previous Git Logs:
 ----------------
 {GitLog(OPTIONS["path"], OPTIONS["maxlogs"])}
@@ -457,9 +459,6 @@ Previous Git Logs:
 Use the previous Git Logs as context for the Git Changes
 provided above. 
 '''
-        content_size = len(git_changes_text.splitlines()) + len(git_logs_text.splitlines()) + 1
-        if content_size > OPTIONS.get('maxline', DEFAULT_MAX_LINE):
-            git_logs_text = ''
 
     content = f'''
 {git_changes_text}
