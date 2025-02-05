@@ -137,7 +137,7 @@ def CallGit(*args):
 # lazy request
 #----------------------------------------------------------------------
 DEFAULT_MAX_LINE = 160
-DEFAULT_MAX_LOGS_HISTORY = 5
+DEFAULT_MAX_LOGS_HISTORY = 0
 
 
 #----------------------------------------------------------------------
@@ -446,8 +446,9 @@ Git Changes:
 
 '''
 
+    git_logs_text = ''
     if OPTIONS['maxlogs'] > 0:
-        git_logs_text = f'''
+        git_logs_text += f'''
 Previous Git Logs:
 ----------------
 {GitLog(OPTIONS["path"])}
