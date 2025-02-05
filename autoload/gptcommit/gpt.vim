@@ -78,6 +78,10 @@ function! gptcommit#gpt#generate(path) abort
 	if prompt != ''
 		let args += ['--prompt=' . prompt]
 	endif
+	let maxlogs = get(g:, 'gpt_commit_max_logs', 0)
+	if maxlogs > 0
+		let args += ['--maxlogs=' . maxlogs]
+	endif
 	if get(g:, 'gpt_commit_fake', 0)
 		let args += ['--fake']
 	endif
