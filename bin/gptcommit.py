@@ -137,6 +137,7 @@ def CallGit(*args):
 # lazy request
 #----------------------------------------------------------------------
 DEFAULT_MAX_LINE = 160
+DEFAULT_MAX_LOGS_HISTORY = 0
 
 
 #----------------------------------------------------------------------
@@ -180,6 +181,19 @@ def GitDiff(path, staged = False):
         text = CallGit('diff')
     os.chdir(previous)
     return text
+
+#----------------------------------------------------------------------
+# get git log
+#----------------------------------------------------------------------
+def GitLog(path, maxlogs = DEFAULT_MAX_LOGS_HISTORY):
+    previous = os.getcwd()
+    if path:
+        os.chdir(path)
+    logs = CallGit('log', '--pretty=format:%s', '-n', maxlogs) or 'No logs'
+    if 'fatal: your current branch' in logs:
+        logs = ''
+    os.chdir(previous)
+    return logs
 
 
 #----------------------------------------------------------------------
@@ -336,6 +350,7 @@ def help():
     print('  --concise       optional, generate concise message if present')
     print('  --utf8          optional, output utf-8 encoded text if present')
     print('  --url=xxx       optional, alternative openai request url')
+    print('  --maxlogs=num   optional, use git <num> log entries to enrich the context')
     print()
     return 0
 
@@ -414,12 +429,42 @@ def main(argv = None):
             return 2
     else:
         OPTIONS['path'] = os.getcwd()
+
+    OPTIONS['maxlogs'] = int(options.get('maxlogs', DEFAULT_MAX_LOGS_HISTORY))
+
     path = OPTIONS['path']
     root = CheckRepo(path)
     if not root:
         print('Not a repository: %s'%path)
         return 3
-    content = GitDiff(OPTIONS['path'], OPTIONS['staged'])
+    
+    git_changes_text = f'''
+Git Changes:
+----------------
+{GitDiff(OPTIONS["path"], OPTIONS["staged"])}
+----------------
+
+'''
+
+    git_logs_text = ''
+    if OPTIONS['maxlogs'] > 0:
+        content_size = len(git_changes_text.splitlines()) + (OPTIONS['maxlogs'] + 6) + 1
+        if content_size > OPTIONS.get('maxline', DEFAULT_MAX_LINE):
+            git_logs_text = f'''
+Previous Git Logs:
+----------------
+{GitLog(OPTIONS["path"], OPTIONS["maxlogs"])}
+----------------
+
+Use the previous Git Logs as context for the Git Changes
+provided above. 
+'''
+
+    content = f'''
+{git_changes_text}
+{git_logs_text}
+With your instructions, the context, and git changes, make a commit message. 
+'''
     msgs = MakeMessages(content, OPTIONS)
     if msgs[1]['content'] == '':
         print('No changes')

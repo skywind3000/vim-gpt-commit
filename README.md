@@ -78,6 +78,7 @@ You will see the result in the command line.
 | g:gpt_commit_model | - | `'gpt-3.5-turbo'` | ChatGPT model |
 | g:gpt_commit_staged | - | `1` | set to 1 to use staged diff |
 | g:gpt_commit_max_line | - | `160` | max diff lines to reference |
+| g:gpt_gpt_commit_max_logs | - | `0` | max log history (git log) use as context |
 | g:gpt_commit_url | - | `''` | alternative request URL, see #1 |
 | g:gpt_commit_python | - | `''` | specify the Python executable file explicitly |
 | g:gpt_commit_engine | - | `'chatgpt'` | change to 'ollama' to use Ollama |
@@ -102,6 +103,7 @@ available options:
   --concise       optional, generate concise message if present
   --utf8          optional, output utf-8 encoded text if present
   --url=xxx       optional, alternative openai request url
+  --maxlogs=num   optional, use git <num> log entries to enrich the context
 ```
 
 It can be integrated into other editors. 
